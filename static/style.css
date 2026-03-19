@@ -25,3 +25,14 @@ h1 {
 .post p {
     margin: 10px 0;
 }
+
+.form-container {
+    display: flex;
+    justify-content: center;
+}
+
+.link-container a {
+    display: flex;
+    justify-content: center;
+    color: #e20e7c;
+}

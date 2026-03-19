@@ -1,7 +1,1 @@
-[
-    {"id": 1, "author": "John Doe", "title": "First Post", "content": "This is my first post."},
-    {"id": 2, "author": "Jane Doe", "title": "Second Post", "content": "This is another post."},
-    {"id": 3, "title": "Third Post", "content": "This is another post."},
-    {"id": 4, "author": "Jane Doe", "content": "This is another post."},
-    {"id": 5, "author": "Jane Doe", "title": "Second Post"}
-]
+[{"id": "019d07db-0c69-75f5-aac8-3ac2f6dbd91f", "author": "Alina", "title": "My first post", "content": "Nothing special to say"}, {"id": "019d07db-6b22-7390-b8c8-e4242fa7bead", "author": "Jane Doe", "title": "Another post", "content": "Lorem ipsum"}, {"id": "019d080f-4c35-769d-9364-769d976e7f5a", "author": "Alina", "title": "Something new", "content": "Random stuff"}]
