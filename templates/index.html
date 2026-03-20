@@ -9,7 +9,7 @@
 <body>
     <h1>Welcome to My Flask Blog!</h1>
     <div class="link-container">
-        <a href="/add">Click here to make a new blog post!</a><br>
+        <a href="/add" class="add-btn">Click here to make a new blog post</a><br>
     </div>
     {% for post in posts |
     sort(attribute='id', reverse=True)
@@ -19,6 +19,7 @@
           <p><em>Written by {{ post.get('author', 'Unknown Author') }}</em></p>
           <p>{{ post.get('content', 'No Content Available') }}</p>
           <div class="post-actions">
+              <a href="/update/ {{ post.id }}" class="update-btn">Update</a>
               <a href="/delete/ {{ post.id }}" class="delete-btn">Delete</a>
           </div>
       </div>
