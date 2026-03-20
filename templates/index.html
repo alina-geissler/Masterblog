@@ -18,6 +18,9 @@
           <h2>{{ post.get('title', 'New Blog Post') }}</h2>
           <p><em>Written by {{ post.get('author', 'Unknown Author') }}</em></p>
           <p>{{ post.get('content', 'No Content Available') }}</p>
+          <div class="post-actions">
+              <a href="/delete/ {{ post.id }}" class="delete-btn">Delete</a>
+          </div>
       </div>
     {% endfor %}
 </body>

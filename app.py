@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import json
 import uuid
 
@@ -49,8 +49,16 @@ def add():
             'content': content
         })
         save_blogposts(DATA_PATH, blog_posts)
-        return render_template('index.html', posts=blog_posts)
+        return redirect('/')
     return render_template('add.html')
+
+
+@app.route('/delete/<path:post_id>')
+def delete(post_id):
+    blog_posts = load_blogposts(DATA_PATH)
+    updated_posts = [post for post in blog_posts if post.get('id').strip() != post_id.strip()]
+    save_blogposts(DATA_PATH, updated_posts)
+    return redirect('/')
 
 
 if __name__ == '__main__':
