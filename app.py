@@ -68,7 +68,7 @@ def add():
         if not content:
             content = 'No Content Available'
         blog_posts = load_blogposts(DATA_PATH)
-        new_id = str(uuid.uuid7())
+        new_id = str(uuid.uuid4())
         blog_posts.append({
             'id': new_id,
             'author': author,
