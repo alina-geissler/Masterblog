@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import json
 import uuid
 
-DATA_PATH = 'blog_posts.json'
+DATA_PATH = 'data/blog_posts.json'
 
 app = Flask(__name__)
 
