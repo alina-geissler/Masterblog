@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 import json
-import uuid
+import os
 
 DATA_PATH = 'data/blog_posts.json'
+os.makedirs(os.path.dirname(DATA_PATH), exist_ok=True)
 
 app = Flask(__name__)
 
@@ -13,8 +14,15 @@ def load_blogposts(file_path):
     :param file_path: path to JSON file
     :return: list of dicts representing the blog posts
     """
-    with open(file_path, "r", encoding="utf-8") as handle:
-        return json.load(handle)
+    if not os.path.exists(file_path):
+        return []
+    try:
+        with open(file_path, "r", encoding="utf-8") as handle:
+            return json.load(handle)
+    except json.JSONDecodeError as e:
+        return f"Error in file: {e}"
+    except OSError as e:
+        return f"Error: {e}"
 
 
 def save_blogposts(file_path, posts):
@@ -34,7 +42,10 @@ def fetch_post_by_id(post_id):
     :return: blog post to be updated
     """
     blog_posts = load_blogposts(DATA_PATH)
-    requested_post = next((post for post in blog_posts if post.get('id').strip() == post_id.strip()), None)
+    if isinstance(blog_posts, str):
+        alert = blog_posts
+        return render_template('index.html', alert_type='danger', alert=alert)
+    requested_post = next((post for post in blog_posts if post.get('id') == post_id), None)
     return requested_post
 
 
@@ -45,6 +56,9 @@ def index():
     :return: rendered index.html template with all blog posts
     """
     blog_posts = load_blogposts(DATA_PATH)
+    if isinstance(blog_posts, str):
+        alert = blog_posts
+        return render_template('index.html', alert_type='danger', alert=alert)
     return render_template('index.html', posts=blog_posts)
 
 
@@ -54,7 +68,7 @@ def add():
     Handle creating a new blog post.
     Accept GET requests to display the add form and POST requests
     to create a new blog post.
-    Saves the new blog post with a UUID to the JSON file.
+    Save the new blog post with a unique ID to the JSON file.
     :return: rendered add.html template if GET, redirect to index page after saving if POST
     """
     if request.method == 'POST':
@@ -68,7 +82,10 @@ def add():
         if not content:
             content = 'No Content Available'
         blog_posts = load_blogposts(DATA_PATH)
-        new_id = str(uuid.uuid4())
+        if blog_posts is str:
+            alert = blog_posts
+            return render_template('index.html', alert_type='danger', alert=alert)
+        new_id = max((post.get('id', 0) for post in blog_posts), default=0) + 1
         blog_posts.append({
             'id': new_id,
             'author': author,
@@ -80,7 +97,7 @@ def add():
     return render_template('add.html')
 
 
-@app.route('/delete/<path:post_id>')
+@app.route('/delete/<int:post_id>', methods=['POST'])
 def delete(post_id):
     """
     Handle deleting a blog post from the JSON file.
@@ -88,21 +105,28 @@ def delete(post_id):
     :return: redirect to the index page after saving
     """
     blog_posts = load_blogposts(DATA_PATH)
-    updated_posts = [post for post in blog_posts if post.get('id').strip() != post_id.strip()]
+    if isinstance(blog_posts, str):
+        alert = blog_posts
+        return render_template('index.html', alert_type='danger', alert=alert)
+    updated_posts = [post for post in blog_posts if post.get('id') != post_id]
     save_blogposts(DATA_PATH, updated_posts)
     return redirect(url_for('index'))
 
 
-@app.route('/update/<path:post_id>', methods=['GET', 'POST'])
+@app.route('/update/<int:post_id>', methods=['GET', 'POST'])
 def update(post_id):
     """
     Handle updating a blog post.
     Accept GET requests to display the update form and POST requests
     to update a blog post.
-    Saves the updated blog post to the JSON file.
+    Update the blog post in the JSON file.
     :param post_id: ID of the blog post to be updated
     :return: rendered update.html template if GET, redirect to index page after saving if POST
     """
+    blog_posts = load_blogposts(DATA_PATH)
+    if isinstance(blog_posts, str):
+        alert = blog_posts
+        return render_template('index.html', alert_type='danger', alert=alert)
     post = fetch_post_by_id(post_id)
     if post is None:
         return "Post not found", 404
@@ -116,10 +140,12 @@ def update(post_id):
         content = request.form.get('content')
         if not content:
             content = 'No Content Available'
-        updated_post = {'id': post.get('id').strip(), 'author': author, 'title': title, 'content': content}
-        blog_posts = load_blogposts(DATA_PATH)
-        blog_posts.remove(post)
-        blog_posts.append(updated_post)
+        for post in blog_posts:
+            if post.get('id') == post_id:
+                post['author'] = author
+                post['title'] = title
+                post['content'] = content
+                break
         save_blogposts(DATA_PATH, blog_posts)
         return redirect(url_for('index'))
     return render_template('update.html', post=post)

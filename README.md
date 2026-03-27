@@ -10,7 +10,7 @@ store them in JSON, and view all posts on a responsive index page.
 
 - **CRUD Operations**: Add, update and delete blog posts
 - **Pre-filled Forms**: Update form auto-populates with existing post data
-- **Unique IDs**: Each post gets a UUID4 on creation
+- **Unique IDs**: Each post gets a unique ID on creation
 - **Default Values**: Fallback values for empty form fields
 - **Storage**: JSON file-based persistence
 - **Responsive UI**: Clean CSS layout with color-coded action buttons
@@ -51,12 +51,12 @@ Linux / macOS: `python3 app.py`
 
 ## :clipboard: Routes
 
-| Route               | Method    | Description                            |
-|---------------------|-----------|----------------------------------------|
-| `/`                 | GET       | Show all blog posts                    |
-| `/add`              | GET, POST | Display form / save new post           |
-| `/update/<post_id>` | GET, POST | Display pre-filled form / save changes |
-| `/delete/<post_id>` | GET       | Delete post by ID                      |
+| Route                   | Method    | Description                            |
+|-------------------------|-----------|----------------------------------------|
+| `/`                     | GET       | Show all blog posts                    |
+| `/add`                  | GET, POST | Display form / save new post           |
+| `/update/<int:post_id>` | GET, POST | Display pre-filled form / save changes |
+| `/delete/<int:post_id>` | POST      | Delete post by ID                      |
 
 ## :package: Dependencies
 

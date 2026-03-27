@@ -64,6 +64,7 @@ h1 {
 }
 
 .delete-btn {
+    all: unset;
     background-color: #dc3545;
     color: white !important;
     padding: 8px 16px;
